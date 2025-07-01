@@ -1,0 +1,2 @@
+class IntegrityLog < ApplicationRecord
+end
