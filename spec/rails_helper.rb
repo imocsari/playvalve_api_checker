@@ -74,3 +74,10 @@ RSpec.configure do |config|
   Rails.application.config.active_record.encryption.deterministic_key ||= 'y' * 32
   Rails.application.config.active_record.encryption.key_derivation_salt ||= 'z' * 32
 end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end

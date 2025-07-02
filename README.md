@@ -22,3 +22,8 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+
+export REDIS_URL=redis://localhost:6379/1
+
+vpn details
