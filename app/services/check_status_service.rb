@@ -72,7 +72,7 @@ class CheckStatusService
   end
 
   def log_integrity(ban_status)
-    IntegrityLogger.log(
+    IntegrityLoggerService.log(
       idfa:,
       ip:,
       country:,

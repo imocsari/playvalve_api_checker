@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: Playvalve API Checker
+  version: 1.0.0
+  description: >
+    API to check user integrity status based on device and network info such as
+    rooted device, VPN/proxy usage, blacklists, and ban status.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+paths:
+  /v1/user/check_status:
+    post:
+      summary: Check user ban status
+      operationId: checkUserStatus
+      tags:
+        - User Integrity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - idfa
+                - ip
+                - country
+                - rooted_device
+              properties:
+                idfa:
+                  type: string
+                  format: uuid
+                  description: Unique device identifier (UUID)
+                  example: "123e4567-e89b-12d3-a456-426614174000"
+                ip:
+                  type: string
+                  format: ipv4
+                  description: User IP address
+                  example: "192.168.1.1"
+                country:
+                  type: string
+                  description: ISO 2-letter country code
+                  example: "US"
+                rooted_device:
+                  type: boolean
+                  description: Whether the device is rooted or jailbroken
+                  example: false
+      responses:
+        '200':
+          description: Ban status result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ban_status:
+                    type: string
+                    enum:
+                      - banned
+                      - not_banned
+                    description: The user's ban status
+                    example: not_banned
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message explaining what went wrong
+                    example: "Idfa can't be blank"

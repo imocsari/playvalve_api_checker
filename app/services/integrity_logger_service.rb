@@ -1,4 +1,4 @@
-class IntegrityLogger
+class IntegrityLoggerService
   def initialize(destination: :database)
     raise ArgumentError, 'Only :database supported so far' unless destination == :database
 

@@ -1,5 +1,9 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
+require 'webmock/rspec'
+
+WebMock.disable_net_connect!(allow_localhost: true)
+
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
@@ -34,6 +38,15 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
+  config.before(:each) do
+    allow($redis).to receive(:get).and_return(nil)
+    allow($redis).to receive(:setex).and_return(true)
+  end
+
+  config.before(:each) do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with('VPNAPI_KEY').and_return('fake_api_key')
+  end
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')

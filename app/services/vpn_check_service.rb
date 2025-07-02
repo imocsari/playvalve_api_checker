@@ -35,23 +35,25 @@ class VpnCheckService
       response = Faraday.get("#{BASE_URL}/#{ip}", { key: api_key }, request_options)
 
       if response.status == 200
-        result = extract_result(response.body)
-        cache_result(ip, result)
-        result
+        begin
+          json = JSON.parse(response.body)
+          result = extract_result(json)
+          cache_result(ip, result)
+          result
+        rescue JSON::ParserError => e
+          Rails.logger.error("VPNAPI JSON error: #{e.message}")
+          DEFAULT_RESULT
+        end
       else
         Rails.logger.warn("VPNAPI failed for IP #{ip} with status #{response.status}")
         DEFAULT_RESULT
       end
-    rescue JSON::ParserError => e
-      Rails.logger.error("VPNAPI JSON error: #{e.message}")
-      DEFAULT_RESULT
     rescue StandardError => e
       Rails.logger.error("VPNAPI error: #{e.message}")
       DEFAULT_RESULT
     end
 
-    def extract_result(body)
-      json = JSON.parse(body)
+    def extract_result(json)
       {
         vpn: json.dig('security', 'vpn') || false,
         proxy: json.dig('security', 'proxy') || false,

@@ -20,7 +20,7 @@ module V1
       ).call
 
       return render json: { error: result[:error] }, status: :bad_request if result[:error]
-      return render json: { error: 'banned' }, status: :forbidden if result[:ban_status] == 'banned'
+      return render json: { ban_status: 'banned' }, status: :ok if result[:ban_status] == 'banned'
 
       render json: result
     end
